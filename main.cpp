@@ -19,6 +19,7 @@ double heading_change();
 
 int main() {
 
+    //Varible Declerations
     int refreshRate = 10;
     double refreshTime = 1/refreshRate;
     double distance_target = 0;
@@ -43,8 +44,10 @@ int main() {
 
     int q = 1;
 
+    //Opening Record File.
     ofstream headingChange1;
     headingChange1.open("Missile_Adjustments.txt",ios::app);
+    //Checks if file is found.
     if(headingChange1.is_open())
     {
         cout << "File Found and Open." << "\n";
@@ -57,11 +60,12 @@ int main() {
 
     clock_t begin0 = clock();
 
+    //Convertions and calculations.
     missileDistance = missileSpeed / refreshRate;
     heading_rad = heading * pi / 180;
     angle_of_change_rad = angle_of_change * pi / 180;
 
-
+    //Direct Distance to Target
     var4 = pow(distance_over_ground, 2) + pow(altitude, 2);
 
     //Vert rise givin in radians
@@ -85,30 +89,34 @@ int main() {
     missileheadingDeg = missileheading * (180/pi);
     cout << "Firing solution for missile " << missileheading << "\n";
 
-    headingChange1 << missileheading << "," << vertRise << "\n";
-
-
+    //Calculate the change in Distance and altitude when the AOA is calculated.
     if (angle_of_change == 0) {
         cout << "No decent or accend";
+        //Add the initail fire co-ordinates
+        headingChange1 << missileheading << "," << vertRise << "\n";
         
         
     } else {
+        //Calculates the change in Altitude.
         change_alt = distanceCovered * tan(angle_of_change_rad);
         cout << "Change in Altitude " << change_alt << "\n";
 
-
+        //The new Final Altitude of the target.
         new_alt = altitude + change_alt;
         cout << "New altitude at intercept Point " << new_alt << "\n";
 
+        //Calculates the new intercept distance.
         var6 = pow(newOvergroundDistance, 2) + pow(new_alt, 2);
         interceptDistance = sqrt(var6);
         cout << "New Intercept Distance with new Altitude " << interceptDistance << "\n";
 
+        //Calculates the new Verticle Angle of the Missile.
         vertChange = atan(new_alt/newOvergroundDistance);
-        cout << "Missile Angle adjustment: " << vertChange << "\n";
+        cout << "New Vert Angle Change: " << vertChange << "\n";
         
     }
 
+    //Calculates the Time taken to calculate the inital intercept point.
     clock_t end0 = clock();
     double elapsed_secs0 = double(end0 - begin0) / CLOCKS_PER_SEC;
     cout << elapsed_secs0 << " Amount of time elapsed" << "\n";
@@ -116,32 +124,39 @@ int main() {
     distance_target = interceptDistance - missileDistance;
 
     //
-    //
+    // Calculates the New intercept point when the Speed and or the Angle Of Attack.
     //
 
-
-    double missile_covered = 0, target_traveled = 0, newDistanceCovered = 0;
+    //Varible Decleration and some calculations.
+    double missile_covered = 0, target_traveled = 0, newDistanceCovered = 0,AOA_old = 0;
     missile_covered = missileSpeed / refreshRate;
     target_traveled = speed / refreshRate;
 
     if(speed != speed_old)
-        {
+        {   
+            //Calculates the Course adjusment when the speed changes but no other varible.
             clock_t begin = clock();
+            //Calculates the new intercept point and returns the course adjusment for the missile.
             missile_change = speed_change(direct_distance,heading,missile_covered,target_traveled,missileSpeed,missileheading,speed);
 
-            missileheading  = missileheading - missile_change;
+            //Calculates the new Heading of the Missile
+            missileheading  = missileheading + missile_change;
             cout << "Missile heading change " << missile_change << "\n";
+            //Writes the Adjustment to the file.
             headingChange1 << missile_change << "," << 0 << "\n";
             cout << "New Missile Heading " << missileheading << "\n";
             clock_t end = clock();
+            //Calculates the Time to Calculate.
             double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
             cout << elapsed_secs << "Amount of time elapsed";
         }
-    else if (speed != speed_old && angle_of_change_rad != 0)
+    else if (speed != speed_old && angle_of_change_rad != AOA_old)
     {
-        
+            //Calculates course adjusment when the speed and the AOA Changes.
             clock_t begin = clock();
+            //Calculates the Missile lateral course Change.
             missile_change = speed_change(direct_distance,heading,missile_covered,target_traveled,missileSpeed,missileheading,speed);
+            
             missileheading  = missileheading - missile_change;
             cout << "Missile heading change " << missile_change << "\n";
             headingChange1 << missile_change << "," << 0 << "\n";
@@ -160,6 +175,7 @@ int main() {
             vertChange = atan(new_alt/newOvergroundDistance);
             cout << "Missile Angle adjustment: " << vertChange << "\n";
 
+            //Calculates the verticle adjusment for the Missile
             vertAdj = vertRise - vertChange;
 
             headingChange1 << missile_change << "," << vertAdj << "\n";
