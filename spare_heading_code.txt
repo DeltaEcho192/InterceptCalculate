@@ -1,0 +1,23 @@
+/*
+    cout << old_heading << " " << missile_angle<< "\n";
+    B = pi -(old_heading + missile_angle);
+    cout << "\n" << B << "\n";
+
+     */
+
+/*
+    h = (remaining_dist_intercpt / sin(E)) * sin(new_heading);
+    cout << h << "\n";
+    */
+
+
+/*
+    a = intercept_dist_old - (remaining_dist_intercpt / sin(E)) * sin(new_heading);
+    cout <<"a: " << a << "\n";
+*/
+
+/*
+    var1 = asin(I);
+
+    cout << var1 << "\n";
+*/

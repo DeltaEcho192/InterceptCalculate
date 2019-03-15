@@ -1,0 +1,4 @@
+//TODO Calculate the intercept point when the heading changes
+//TODO Calculate intercept when target moves away from the missile. Calcuate the extra distance and the missle adjustment.
+//TODO Save course and adjustment history.
+//TODO Use CSV, to get flight data for aircraft and predict intercept point
